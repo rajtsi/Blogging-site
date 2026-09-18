@@ -11,8 +11,10 @@
 // r&j&t_Singh->
 // '/'->
 
+import jwt from 'jsonwebtoken';
 import User from "../models/user.js";
 import bcrypt from 'bcrypt';
+
 
 export const register = async (req, res) => {
     try {
@@ -25,7 +27,6 @@ export const register = async (req, res) => {
                 }
             )
         }
-
         const userFromDb = await User.findOne({ email });
         if (userFromDb) {
             return res.json(
@@ -83,7 +84,6 @@ export const login = async (req, res) => {
         }
 
         const isMatch = await bcrypt.compare(password, userFromDb?.password);
-
         if (!isMatch) {
             return res.json(
                 {
@@ -93,6 +93,16 @@ export const login = async (req, res) => {
             )
         }
 
+        const payload = {
+            id: userFromDb._id,
+            role: userFromDb.role,
+        }
+        
+        const token = jwt.sign(payload, process.env.SECRET_KEY)
+
+        // here now we will try to creat a token of JWT type and then we can send this token to the logged in user  and user will send it with new requests and we will verify the token with our secreaet key and see if the users is sedning correct Token or not. once verified we came to knwo teh detils of user taht we can use for autherisation purpose
+
+
         return res.json({
             Success: true,
             Message: "Sucessfully Logged In ",
@@ -101,7 +111,8 @@ export const login = async (req, res) => {
                 name: userFromDb.name,
                 email: userFromDb.email,
                 role: userFromDb.role
-            }
+            },
+            token
         });
 
     }
