@@ -37,3 +37,30 @@ export const postComment = async (req, res) => {
     }
 
 }
+
+
+
+
+export const getBlogComments = async (req, res) => {
+    try {
+        const { blogId } = req.params;
+
+        const comments = await Comment.find({ 'blog': blogId, 'isApprove': true }).populate('user', 'name');
+
+        return res.json(
+            {
+                status: true,
+                message: "Sucessfully fetched all the comments of a blog",
+                data: comments
+            }
+        );
+    }
+    catch (error) {
+        return res.json({
+            status: false,
+            message: error.message
+        })
+
+    }
+
+}

@@ -57,3 +57,52 @@ export const postBlog = async (req, res) => {
     }
 
 }
+
+
+export const getAllBlog = async (req, res) => {
+    try {
+        const allPublishedBlog = await Blog.find({ isPublised: true }, { content: 0 });
+        return res.json(
+            {
+                status: true,
+                message: "Sucessfully fetched all Published Blogs",
+                data: allPublishedBlog
+            }
+        )
+
+    }
+    catch (error) {
+        return res.json({
+            status: false,
+            message: error.message
+        })
+
+    }
+
+}
+
+
+export const getABlog = async (req, res) => {
+    try {
+        const { blogId } = req.params;
+        const blogDetails = await Blog.findOne({ '_id': blogId });
+        return res.json(
+            {
+                status: true,
+                message: "Sucessfully fetched all A Blog Details",
+                data: blogDetails
+            }
+        )
+
+    }
+    catch (error) {
+        return res.json({
+            status: false,
+            message: error.message
+        })
+
+    }
+
+}
+
+
