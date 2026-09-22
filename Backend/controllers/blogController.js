@@ -14,6 +14,16 @@ export const postBlog = async (req, res) => {
             )
         }
 
+
+        const exist = Blog.findOne({ title });
+
+        if (exist) {
+            return res.json({
+                status: false,
+                message: 'This blog Title is already Taken'
+            })
+        }
+
         await Blog.create({
             author: authorId,
             title,

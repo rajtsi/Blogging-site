@@ -2,9 +2,7 @@
 import Comment from "../models/comment.js";
 
 export const postComment = async (req, res) => {
-
     try {
-
         const { userId, content, blogId } = req.body;
         if (!userId || !content || !blogId) {
             return res.json(
@@ -14,8 +12,6 @@ export const postComment = async (req, res) => {
                 }
             )
         }
-         
-         
         await Comment.create({
             user: userId,
             content,
