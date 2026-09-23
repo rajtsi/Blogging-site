@@ -97,7 +97,7 @@ export const login = async (req, res) => {
             id: userFromDb._id,
             role: userFromDb.role,
         }
-        
+
         const token = jwt.sign(payload, process.env.SECRET_KEY)
 
         // here now we will try to creat a token of JWT type and then we can send this token to the logged in user  and user will send it with new requests and we will verify the token with our secreaet key and see if the users is sedning correct Token or not. once verified we came to knwo teh detils of user taht we can use for autherisation purpose
@@ -127,3 +127,64 @@ export const login = async (req, res) => {
 
 
 
+
+export const registerAdmin = async (req, res) => {
+    try {
+        const { name, email, password } = req.body;
+        if (!name || !email || !password) {
+            return res.json(
+                {
+                    Success: false,
+                    Message: "You have to provide all 3 Details to Register"
+                }
+            )
+        }
+
+        const userFromDb = await User.findOne({ email });
+        if (userFromDb) {
+            return res.json(
+                {
+                    Success: false,
+                    Message: "Email is already Used"
+                }
+            )
+        }
+
+
+        // We can write a logic that will check that if the given email and password matches the oen we have in Env then only we wil allow to register as admin
+
+        const AdminMail = process.env.ADMIN_MAIL;
+        const AdminPass = process.env.ADMIN_PASS;
+
+        // console.log(AdminMail);
+        // console.log(AdminPass);
+        // console.log(email);
+        // console.log(password);
+
+        if (AdminMail !== email || AdminPass !== password) {
+            return res.json(
+                {
+                    Success: false,
+                    Message: "You Can not register as admin"
+                }
+            )
+
+        }
+
+        const hassedPassword = await bcrypt.hash(password, 10);
+
+        await User.create({ name, email, password: hassedPassword, role: 'admin' });
+
+        return res.status(201).json({
+            Success: true,
+            Message: "You are now registered"
+        });
+
+    }
+    catch (error) {
+        return res.json({
+            Success: false,
+            Message: error.Message,
+        });
+    }
+}

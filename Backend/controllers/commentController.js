@@ -1,6 +1,6 @@
 
 import Comment from "../models/comment.js";
-
+import { ObjectId } from 'mongodb';
 export const postComment = async (req, res) => {
     try {
         const { userId, content, blogId } = req.body;
@@ -64,3 +64,69 @@ export const getBlogComments = async (req, res) => {
     }
 
 }
+
+
+export const reviewComment = async (req, res) => {
+    try {
+        const { commentId } = req.params;
+        let { approve } = req.body;
+
+        if (req.user.role !== 'admin') {
+            return res.json({
+                status: false,
+                message: 'You are Not authaurised to do this'
+            })
+        }
+
+
+        console.log(commentId, approve);
+        console.log(typeof (approve));
+        if (!commentId || !approve) {
+            return res.json({
+                status: false,
+                message: 'Missing Details for Update'
+            })
+        }
+        if (approve === 'true') {
+            approve = true;
+        }
+        else {
+            approve = false
+        }
+        await Comment.updateOne(
+            {
+                _id: new ObjectId(commentId)
+            },
+            {
+                $set: { isApprove: approve }
+            }
+        );
+
+        return res.json(
+            {
+                status: true,
+                message: "Sucessfully Updated Comment",
+                data: { isApprove: approve }
+            }
+        );
+    }
+    catch (error) {
+        return res.json({
+            status: false,
+            message: error.message
+        })
+
+    }
+
+}
+
+
+
+
+// 1,2,3,4 -> 5 -> success - > 1,5,3,4
+
+// comment-> {
+
+//     statun-> approve
+// }
+// -> success 
