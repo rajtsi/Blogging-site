@@ -9,6 +9,7 @@ import adminRoute from '../Backend/routes/adminRoute.js'
 import userRoute from '../Backend/routes/userRoute.js'
 import { authMiddleware } from "../Backend/middleware/authMiddleware.js"
 import { adminMiddleware } from "../Backend/middleware/adminMiddleware.js"
+import upload from './middleware/multerMiddleware.js';
 const app = express()
 
 //middleware
@@ -23,7 +24,7 @@ app.get('/', (req, res) => {
 
 app.use('/api/auth', authRoute); // Unprotected Route
 
-app.use('/api/blog/', authMiddleware, blogRoute); // protected Route
+app.use('/api/blog/', authMiddleware, upload.single('blogImage'), blogRoute); // protected Route
 app.use('/api/comment/', authMiddleware, commentRoute);  // protected Route
 app.use('/api/admin', authMiddleware, adminMiddleware, adminRoute);//protected + admin protected
 app.use('/api/user', authMiddleware, userRoute); // procted Route

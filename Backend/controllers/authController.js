@@ -60,8 +60,8 @@ export const login = async (req, res) => {
     try {
 
         //console.log("Yes we are reaching inside login function");
-
-        const { email, password } = req.body;
+        
+        const { email, password } = req.body;      
         if (!email || !password) {
             return res.json(
                 {
@@ -70,11 +70,7 @@ export const login = async (req, res) => {
                 }
             )
         }
-
-
-
         // console.log("Yes we are reaching inside login function", email);
-
         const userFromDb = await User.findOne({ email });
         if (!userFromDb) {
             return res.json(

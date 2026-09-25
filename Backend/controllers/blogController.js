@@ -1,9 +1,32 @@
 
 import Blog from "../models/blog.js";
 import Comment from "../models/comment.js";
+import cloudinary from "../config/clournary.js";
+import fs from 'fs';
 export const postBlog = async (req, res) => {
     try {
-        const { title, content, description, category, imageUrl } = req.body;
+        const { title, content, description, category } = req.body;
+
+        const file = req.file;
+        console.log(file.path);
+        const localFilePath = req.file.path;
+        //  code for compressing file manually 
+
+        // Upload the file from the local path to Cloudinary
+        const uploadResult = await cloudinary.uploader.upload(localFilePath, {
+            folder: 'BlogImages', // Optional: creates/uses a folder inside Cloudinary
+            resource_type: 'auto'     // Automatically detects images, videos, or PDFs
+        });
+            
+        fs.unlink(localFilePath, (err) => {
+            if (err) console.error("Error deleting local file:", err);
+        });
+        const imageUrl = uploadResult.secure_url;
+
+        //-> some how uploed this image to cloudnary and get teh url and then use imageurl for storing in db 
+        //this imange is not a string its an image 
+        // insted of storing whole image in ram and then storing it in Disk we will take chunks of iamge in ram and will keep storing it in disk and will return sucess once whole image is stored in disk  
+
         if (!authorId || !title || !content || !description || !category || !imageUrl) {
             return res.json(
                 {
