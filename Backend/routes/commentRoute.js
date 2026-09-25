@@ -4,5 +4,4 @@ import { postComment, getBlogComments, reviewComment } from '../controllers/comm
 const router = express.Router();
 router.post('/postComment', postComment);
 router.get('/getBlogComments/:blogId', getBlogComments);
-router.patch('/updateBlogComments/:commentId', reviewComment);
 export default router; 

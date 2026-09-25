@@ -59,7 +59,7 @@ export const register = async (req, res) => {
 export const login = async (req, res) => {
     try {
 
-        console.log("Yes we are reaching inside login function");
+        //console.log("Yes we are reaching inside login function");
 
         const { email, password } = req.body;
         if (!email || !password) {
@@ -71,7 +71,9 @@ export const login = async (req, res) => {
             )
         }
 
-        console.log("Yes we are reaching inside login function", email);
+
+
+        // console.log("Yes we are reaching inside login function", email);
 
         const userFromDb = await User.findOne({ email });
         if (!userFromDb) {
@@ -119,7 +121,7 @@ export const login = async (req, res) => {
     catch (error) {
         return res.json({
             Success: false,
-            Message: error.Message,
+            Message: error.message,
         });
     }
 }

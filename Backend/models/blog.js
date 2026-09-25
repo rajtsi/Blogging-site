@@ -22,23 +22,23 @@ const blogSchema = new mongoose.Schema(
         isPublised:
         {
             type: Boolean,
-            require: true,
+            required: true,
             default: false
         },
         content: {
             type: String,
-            require: true
+            required: true
         },
-        categoty: {
+        category: {
             type: String,
-            require: true
+            required: true
         },
         // we have 2 options to store an image in db 
         // one is storing image in raw bytes form 01010101 but this will ytake so much or dpace and is generally not recomended
         // another way is use a 3rd pary service where you can upload the image and then you will get an url to access that image, so you can store that url in your db and that wil be light weight
         imageUrl: {
             type: String,
-            require: true
+            required: true
         }
 
     }, {

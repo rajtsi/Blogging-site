@@ -5,7 +5,10 @@ import connectDb from './config/db.js';
 import authRoute from '../Backend/routes/authRoute.js'
 import blogRoute from '../Backend/routes/blogRoute.js'
 import commentRoute from '../Backend/routes/commentRoute.js'
-import { myCustomMiddleware } from "../Backend/middleware/authMiddleware.js"
+import adminRoute from '../Backend/routes/adminRoute.js'
+import userRoute from '../Backend/routes/userRoute.js'
+import { authMiddleware } from "../Backend/middleware/authMiddleware.js"
+import { adminMiddleware } from "../Backend/middleware/adminMiddleware.js"
 const app = express()
 
 //middleware
@@ -20,9 +23,10 @@ app.get('/', (req, res) => {
 
 app.use('/api/auth', authRoute); // Unprotected Route
 
-app.use('/api/blog/', myCustomMiddleware, blogRoute); // protected Route
-app.use('/api/comment/', myCustomMiddleware, commentRoute);  // protected Route
-
+app.use('/api/blog/', authMiddleware, blogRoute); // protected Route
+app.use('/api/comment/', authMiddleware, commentRoute);  // protected Route
+app.use('/api/admin', authMiddleware, adminMiddleware, adminRoute);//protected + admin protected
+app.use('/api/user', authMiddleware, userRoute); // procted Route
 const serverOn = async () => {
     try {
         await connectDb();

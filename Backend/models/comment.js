@@ -21,7 +21,7 @@ const commentSchema = new mongoose.Schema(
         isApprove:
         {
             type: Boolean,
-            require: true,
+            required: true,
             default: false
         }
     }, {
