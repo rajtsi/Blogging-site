@@ -50,7 +50,7 @@ export const register = async (req, res) => {
     catch (error) {
         return res.json({
             Success: false,
-            Message: error.Message,
+            Message: error.message,
         });
     }
 }
@@ -60,8 +60,8 @@ export const login = async (req, res) => {
     try {
 
         //console.log("Yes we are reaching inside login function");
-        
-        const { email, password } = req.body;      
+
+        const { email, password } = req.body;
         if (!email || !password) {
             return res.json(
                 {
@@ -104,7 +104,7 @@ export const login = async (req, res) => {
         return res.json({
             Success: true,
             Message: "Sucessfully Logged In ",
-            data: {
+            user: {
                 id: userFromDb._id,
                 name: userFromDb.name,
                 email: userFromDb.email,
@@ -182,7 +182,7 @@ export const registerAdmin = async (req, res) => {
     catch (error) {
         return res.json({
             Success: false,
-            Message: error.Message,
+            Message: error.message,
         });
     }
 }
