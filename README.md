@@ -1,6 +1,6 @@
 .ENV Format
 
-For BackEnd
+**For BackEnd**
 
 PORT= 3000
 
@@ -27,5 +27,6 @@ CAPI_SECRET=
 
 
 
-For FrontEnd
+**For FrontEnd**
+
 VITE_BASEURL=https://blogging-site-dlp0.onrender.com/
