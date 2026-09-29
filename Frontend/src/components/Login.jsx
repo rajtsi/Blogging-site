@@ -26,7 +26,7 @@ const Login = () => {
 
                 navigate('/');
             } else {
-                toast.error(data.message)
+                toast.error(data.Message)
             }
         } catch (error) {
             toast.error(error.message)
