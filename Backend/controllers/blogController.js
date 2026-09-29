@@ -112,8 +112,7 @@ export const getABlog = async (req, res) => {
         const { blogId } = req.params;
 
         const blogDetails = await Blog.findOne({
-            _id: blogId,
-            isPublised: true
+            _id: blogId
         }).populate('author', 'name');
 
         return res.json({

@@ -21,7 +21,7 @@ const Signup = () => {
                 endPoint += 'register'
             }
             const { data } = await axios.post(endPoint, { name, email, password })
-            console.log(data);
+            // console.log(data);
             if (data.Success) {
                 toast.success(data.Message)
 

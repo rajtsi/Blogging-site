@@ -3,7 +3,7 @@ import { assets } from "../../assets/assets"
 import { useAppContext } from "../../context/AppContext";
 
 const BlogTableItems = ({ blog, fetchBlogs, index }) => {
-  console.log("BLOG TABLE DATA:", blog);
+  // console.log("BLOG TABLE DATA:", blog);
   const { title, createdAt, isPublised } = blog;
   const { axios, navigate } = useAppContext();
 

@@ -13,7 +13,7 @@ const ProtectedRoute = ({ role }) => {
             </div>
         );
     }
-
+    
     if (!token || !user) {
         return <Navigate to="/login" replace />;
     }

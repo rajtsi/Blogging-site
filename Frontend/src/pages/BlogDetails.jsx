@@ -15,10 +15,10 @@ const BlogDetails = () => {
 
     const fetchBlog = async () => {
         try {
-            const { data } = await axios.get(`/api/blog/${id}`)
-
-            if (data.success) {
-                setBlog(data.blog)
+            const { data } = await axios.get(`/api/blog/getABlog/${id}`);
+            // console.log(data);
+            if (data.status) {
+                setBlog(data.data)
             } else {
                 toast.error(data.message)
             }
@@ -78,18 +78,26 @@ const BlogDetails = () => {
 
                 {/* Image */}
                 <img
-                    src={blog.image}
+                    src={blog.imageUrl}
                     alt={blog.title}
                     className="w-full mt-6 rounded-lg"
                 />
 
                 {/* Description */}
-                <div
-                    className="mt-8 prose max-w-none"
-                    dangerouslySetInnerHTML={{
-                        __html: blog.description
-                    }}
-                />
+                <div className='mx-5 max-w-5xl md:mx-auto my-10 mt-6'>
+                    <p className='max-w-3xl mx-auto mb-8 text-gray-600 text-lg'>
+                        {blog.description}
+                    </p>
+
+                    <p className='max-w-3xl mx-auto mb-2 text-sm font-medium text-gray-500'>
+                        Article
+                    </p>
+
+                    <div
+                        className='rich-text max-w-3xl mx-auto'
+                        dangerouslySetInnerHTML={{ __html: blog.content }}
+                    />
+                </div>
 
                 {/* Status */}
                 <div className="mt-8 pt-5 border-t">
