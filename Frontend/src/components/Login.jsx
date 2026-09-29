@@ -14,7 +14,6 @@ const Login = () => {
 
         try {
             const { data } = await axios.post('/api/auth/login', { email, password })
-            console.log(data)
             if (data.Success) {
                 setToken(data.token)
                 setUser(data.user);
@@ -28,8 +27,6 @@ const Login = () => {
                 navigate('/');
             } else {
                 toast.error(data.message)
-                console.log(data)
-                //  console.log(data.message)
             }
         } catch (error) {
             toast.error(error.message)

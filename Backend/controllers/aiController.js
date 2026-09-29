@@ -3,33 +3,28 @@ import gemimiConfig from "../config/gemini.js";
 
 export const generateBlogContent = async (req, res) => {
     try {
-
-        const {
-            title,
-            category,
-            discription
-        } = req.body;
-
+        const { title, category, description } = req.body;
 
         if (!title) {
             return res.json({
                 status: false,
-                message: "Title is mondatory for Content Generation"
-            })
+                message: "Title is mandatory for Content Generation"
+            });
         }
+
         let aiPrompt = process.env.AI_PROMPT;
-        aiPrompt += `title for content generation is ${title}`;
-        if (discription) {
-            aiPrompt += ` description is ${discription}`;
+        aiPrompt += ` Title: ${title}`;
+
+        if (description) {
+            aiPrompt += ` Description: ${description}`;
         }
+
         if (category) {
-            aiPrompt += `and category is ${category}`;
+            aiPrompt += ` Category: ${category}`;
         }
 
-        console.log(aiPrompt);
-
-        // we have a input (aiPrompt)-> we want and output that will be out generated content
         const ai = gemimiConfig();
+
         const response = await ai.models.generateContent({
             model: "gemini-3.5-flash-lite",
             contents: aiPrompt,
@@ -38,9 +33,7 @@ export const generateBlogContent = async (req, res) => {
             }
         });
 
-        let responseStr = response.text;
-
-        const finalResponseObj = JSON.parse(responseStr);
+        const finalResponseObj = JSON.parse(response.text);
 
         return res.json({
             status: true,
@@ -48,13 +41,10 @@ export const generateBlogContent = async (req, res) => {
             data: finalResponseObj
         });
 
-    }
-    catch (error) {
+    } catch (error) {
         return res.json({
             status: false,
             message: error.message
-        })
-
+        });
     }
-
 }

@@ -7,52 +7,87 @@ import toast from 'react-hot-toast'
 axios.defaults.baseURL = import.meta.env.VITE_BASEURL
 const AppContext = createContext();
 
-
 export const AppProvider = ({ children }) => {
-
     const navigate = useNavigate();
-    const [token, setToken] = useState(null)
+
+    const [token, setToken] = useState(null);
     const [user, setUser] = useState(null);
-    const [blogs, setBlogs] = useState([])
-    const [blogsLoading, setBlogsLoading] = useState(true)
-    const [input, setInput] = useState("")
+    const [blogs, setBlogs] = useState([]);
+    const [blogsLoading, setBlogsLoading] = useState(true);
+    const [input, setInput] = useState("");
     const [authLoading, setAuthLoading] = useState(true);
 
+    const logout = () => {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+
+        setToken(null);
+        setUser(null);
+
+        delete axios.defaults.headers.common['Authorization'];
+
+        navigate('/login');
+    }
 
     const fetchBlogs = async () => {
         try {
+            setBlogsLoading(true);
 
-            const apiResponse = await axios.get('/api/blog/getAllBlogs');
-            console.log(apiResponse.data);
-            apiResponse.data.status ? setBlogs(apiResponse.data.data) : toast.error(apiResponse.data.message);
+            const { data } = await axios.get('/api/blog/getAllBlogs');
+
+            if (data.status) {
+                setBlogs(data.data);
+            } else {
+                toast.error(data.message);
+            }
         } catch (error) {
-            toast.error(error.message)
+            toast.error(error.response?.data?.message || error.message);
         } finally {
             setBlogsLoading(false);
         }
     }
 
     useEffect(() => {
-        const token = localStorage.getItem('token');
+        const storedToken = localStorage.getItem('token');
         const storedUser = localStorage.getItem('user');
-        console.log("token is ", token);
-        if (token && storedUser) {
-            setToken(token);
+
+        console.log("token is", storedToken);
+
+        if (storedToken && storedUser) {
+            setToken(storedToken);
             setUser(JSON.parse(storedUser));
-            axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+
+            axios.defaults.headers.common['Authorization'] =
+                `Bearer ${storedToken}`;
         }
-        if (token)
-            fetchBlogs();
 
         setAuthLoading(false);
-    }, [])
+    }, []);
+
+    useEffect(() => {
+        if (token) {
+            fetchBlogs();
+        } else {
+            setBlogs([]);
+        }
+    }, [token]);
 
     const value = {
-        axios, navigate, token, setToken, user,
-        setUser, authLoading, blogs, setBlogs, blogsLoading, input, setInput
+        axios,
+        navigate,
+        token,
+        setToken,
+        user,
+        setUser,
+        authLoading,
+        blogs,
+        setBlogs,
+        blogsLoading,
+        setBlogsLoading,
+        input,
+        setInput,
+        logout
     }
-
-
 
     return (
         <AppContext.Provider value={value}>
@@ -61,6 +96,4 @@ export const AppProvider = ({ children }) => {
     )
 }
 
-export const useAppContext = () => {
-    return useContext(AppContext)
-}
+export const useAppContext = () => useContext(AppContext)

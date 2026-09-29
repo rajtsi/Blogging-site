@@ -3,41 +3,34 @@ import Comment from "../models/comment.js";
 import { ObjectId } from 'mongodb';
 export const postComment = async (req, res) => {
     try {
-        const { userId, content, blogId } = req.body;
-        if (!userId || !content || !blogId) {
-            return res.json(
-                {
-                    status: false,
-                    message: "Please Give a valid Comment"
-                }
-            )
+        const { content, blogId } = req.body;
+
+        if (!content || !blogId) {
+            return res.json({
+                status: false,
+                message: "Please give a valid comment"
+            });
         }
+
         await Comment.create({
-            user: userId,
+            user: req.user.id,
             content,
             blog: blogId
         });
 
-        return res.json(
-            {
-                status: true,
-                message: "Your Comment is submitted for Review",
-                data: {
-                    content
-                }
-            }
-        );
-    }
-    catch (error) {
+        return res.json({
+            status: true,
+            message: "Your Comment is submitted for Review",
+            data: { content }
+        });
+
+    } catch (error) {
         return res.json({
             status: false,
             message: error.message
-        })
-
+        });
     }
-
 }
-
 
 
 
@@ -120,7 +113,51 @@ export const reviewComment = async (req, res) => {
 
 }
 
+export const getAllComments = async (req, res) => {
+    try {
+        const comments = await Comment.find()
+            .populate('blog', 'title')
+            .populate('user', 'name')
+            .sort({ createdAt: -1 });
 
+        return res.json({
+            status: true,
+            message: "Successfully fetched all comments",
+            data: comments
+        });
+    } catch (error) {
+        return res.json({
+            status: false,
+            message: error.message
+        });
+    }
+}
+
+
+export const deleteComment = async (req, res) => {
+    try {
+        const { commentId } = req.params;
+
+        const comment = await Comment.findByIdAndDelete(commentId);
+
+        if (!comment) {
+            return res.json({
+                status: false,
+                message: "Comment does not exist"
+            });
+        }
+
+        return res.json({
+            status: true,
+            message: "Comment deleted successfully"
+        });
+    } catch (error) {
+        return res.json({
+            status: false,
+            message: error.message
+        });
+    }
+}
 
 
 // 1,2,3,4 -> 5 -> success - > 1,5,3,4

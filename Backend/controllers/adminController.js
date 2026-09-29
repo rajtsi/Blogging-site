@@ -3,23 +3,21 @@ import Comment from "../models/comment.js";
 
 export const getAllBlogsWithDrafts = async (req, res) => {
     try {
-
-        const allBlogs = await Blog.find();
+        const allBlogs = await Blog.find()
+            .select('title createdAt isPublised')
+            .sort({ createdAt: -1 });
 
         return res.json({
-            Success: true,
-            Message: "Successfully fetched all Blogs",
+            status: true,
+            message: "Successfully fetched all Blogs",
             data: allBlogs
         });
 
-    }
-    catch (error) {
-
+    } catch (error) {
         return res.json({
-            Success: false,
-            Message: error.message
+            status: false,
+            message: error.message
         });
-
     }
 }
 
@@ -70,31 +68,23 @@ export const publishAndUnpublishBlog = async (req, res) => {
 export const getDashboardCount = async (req, res) => {
     try {
         const totalBlogs = await Blog.countDocuments();
-        const publishedBlogs = await Blog.countDocuments({
-            isPublised: true
-        });
-        const draftBlogs = await Blog.countDocuments({
-            isPublised: false
-        });
-        const totalApprovedComments = await Comment.countDocuments({
-            isApprove: true
-        });
+        const draftBlogs = await Blog.countDocuments({ isPublised: false });
+        const totalApprovedComments = await Comment.countDocuments({ isApprove: true });
 
         return res.json({
             status: true,
             message: "Successfully fetched Dashboard Counts",
             data: {
                 totalBlogs,
-                publishedBlogs,
                 draftBlogs,
                 totalApprovedComments
             }
-        })
-    }
-    catch (error) {
+        });
+
+    } catch (error) {
         return res.json({
             status: false,
             message: error.message
-        })
+        });
     }
 }

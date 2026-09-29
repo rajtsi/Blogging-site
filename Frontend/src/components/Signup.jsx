@@ -9,12 +9,18 @@ const Signup = () => {
     const [name, setName] = useState('')
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
+    const [admin, setAdmin] = useState(false);
 
     const handleSubmit = async (e) => {
         e.preventDefault()
 
         try {
-            const { data } = await axios.post('/api/auth/register', { name, email, password })
+            let endPoint = `/api/auth/`;
+            if (admin) { endPoint += 'registerAdmin'; }
+            else {
+                endPoint += 'register'
+            }
+            const { data } = await axios.post(endPoint, { name, email, password })
             console.log(data);
             if (data.Success) {
                 toast.success(data.Message)
@@ -88,6 +94,19 @@ const Signup = () => {
                                 placeholder='create a password'
                                 className='border-b-2 border-gray-300 p-2 outline-none mb-6'
                             />
+                        </div>
+
+                        <div className='flex items-center gap-2 mb-6'>
+                            <input
+                                type="checkbox"
+                                checked={admin}
+                                onChange={(e) => setAdmin(e.target.checked)}
+                                className='w-4 h-4 cursor-pointer'
+                            />
+
+                            <label className='cursor-pointer'>
+                                Register as Admin
+                            </label>
                         </div>
 
                         <button
